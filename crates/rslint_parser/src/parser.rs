@@ -94,6 +94,7 @@ impl<'t> Parser<'t> {
     pub fn new(tokens: TokenSource<'t>, file_id: usize, syntax: Syntax) -> Parser<'t> {
         // TODO(RDambrosio016): Does TypeScript imply Module/Strict?
         let strict = if syntax.file_kind == FileKind::Module {
+            println!("Here");
             Some(StrictMode::Module)
         } else {
             None
@@ -151,12 +152,12 @@ impl<'t> Parser<'t> {
         self.nth_tok(0)
     }
 
-    /// Look ahead at a token and get its kind, **The max lookahead is 4**.  
+    /// Look ahead at a token and get its kind, **The max lookahead is 4**.
     pub fn nth(&self, n: usize) -> SyntaxKind {
         self.tokens.lookahead_nth(n).kind
     }
 
-    /// Look ahead at a token, **The max lookahead is 4**.  
+    /// Look ahead at a token, **The max lookahead is 4**.
     pub fn nth_tok(&self, n: usize) -> Token {
         self.overflow_check();
         self.tokens.lookahead_nth(n)

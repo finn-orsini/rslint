@@ -124,11 +124,20 @@ fn parse_common(
     file_id: usize,
     syntax: Syntax,
 ) -> (Vec<Event>, Vec<ParserError>, Vec<rslint_lexer::Token>) {
+
     let (tokens, mut errors) = tokenize(text, file_id);
+
+    println!("Tokens {:?}",tokens);
 
     let tok_source = TokenSource::new(text, &tokens);
 
+
+    println!("File kind {:?}",    syntax.file_kind);
     let mut parser = crate::Parser::new(tok_source, file_id, syntax);
+
+
+    println!("Is strict {:?}",parser.state.strict.is_some());
+
     crate::syntax::program::parse(&mut parser);
 
     let (events, p_errs) = parser.finish();
@@ -177,7 +186,7 @@ pub fn parse_text(text: &str, file_id: usize) -> Parse<Script> {
 ///
 /// Unlike [`parse_text`], the final parse result includes no whitespace, it does however include errors.
 ///
-/// Note however that the ranges and text of nodes still includes whitespace! Therefore you should trim text before rendering it.  
+/// Note however that the ranges and text of nodes still includes whitespace! Therefore you should trim text before rendering it.
 /// The [`util`](crate::util) module has utility functions for dealing with this easily.
 ///
 /// ```
@@ -225,6 +234,7 @@ pub fn parse_module_lossy(text: &str, file_id: usize) -> Parse<Module> {
 /// Same as [`parse_text`] but configures the parser to parse an ECMAScript module instead of a script
 pub fn parse_module(text: &str, file_id: usize) -> Parse<Module> {
     let (events, errors, tokens) = parse_common(text, file_id, Syntax::default().module());
+
     let mut tree_sink = LosslessTreeSink::new(text, &tokens);
     crate::process(&mut tree_sink, events, errors);
     let (green, parse_errors) = tree_sink.finish();
