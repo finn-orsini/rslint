@@ -21,9 +21,13 @@ impl CstRule for NoWith {
   }
 }
 
-NoStrict
+
+
+
+
 rule_tests! {
   NoWith::default(),
+  "true",
   err: {
     "
     with (point) {
